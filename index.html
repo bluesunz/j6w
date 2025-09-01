@@ -1,0 +1,285 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <title>Vibe 6W — Pushup Plan (Working)</title>
+
+  <!-- PWA hooks -->
+  <meta name="theme-color" content="#3c6df0">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Vibe 6W">
+
+  <style>
+  :root{--bg:#0b0c10;--fg:#eaeef5;--muted:#98a2b3;--card:#12141a;--surface:#0f1217;--sep:#1f2430;--accent:#3c6df0;--shadow:0 1px 2px rgba(0,0,0,.35);--tile1:#1d2540;--tile2:#153226;--tile3:#3a2a12}
+  @media(prefers-color-scheme:light){:root{--bg:#f7f8fb;--fg:#0b0c10;--muted:#667085;--card:#ffffff;--surface:#f4f6f8;--sep:#e4e7ec;--accent:#1e66ff;--shadow:0 1px 3px rgba(0,0,0,.06);--tile1:#eaf2ff;--tile2:#eafaf2;--tile3:#fff4db}}
+  *{box-sizing:border-box}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,system-ui,sans-serif;background:var(--bg);color:var(--fg)}
+  .hidden{display:none!important}
+  header{position:sticky;top:0;padding:14px 16px;background:rgba(0,0,0,.06);backdrop-filter:blur(8px);border-bottom:1px solid var(--sep);z-index:20;display:flex;align-items:center;justify-content:space-between}
+  .h1{margin:0;font-weight:800;font-size:20px}
+  main{max-width:760px;margin:0 auto;padding:16px}
+  .grid{display:grid;gap:12px}
+  .card{background:var(--card);border:1px solid var(--sep);border-radius:18px;padding:14px;box-shadow:var(--shadow)}
+  .workout{display:flex;align-items:center;justify-content:space-between;min-height:64px;border-radius:18px;cursor:pointer}
+  .workout .name{font-weight:700}.workout .sub{font-size:12px;color:var(--muted);margin-left:auto}
+  .workout[data-go=pushup]{background:var(--tile1)}.workout[data-go=squat]{background:var(--tile2)}.workout[data-go=plank]{background:var(--tile3)}
+  .workout::after{content:'›';opacity:.6}
+  .setrow{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;background:var(--surface);border:1px solid var(--sep);border-radius:14px;padding:10px;margin-top:6px}
+  .setnum{width:36px;height:36px;border-radius:10px;display:grid;place-items:center;border:1px solid var(--sep);background:var(--card);font-weight:700}
+  .timer{display:grid;gap:6px;place-items:center;border:1px solid var(--sep);border-radius:14px;padding:12px;background:var(--surface)}
+  #rest{font-weight:800;font-size:32px}.small{font-size:12px;color:var(--muted)}
+  .btn{appearance:none;border:1px solid var(--sep);background:var(--card);color:var(--fg);border-radius:12px;padding:8px 12px;font-weight:700;cursor:pointer}
+  .btn.flat{border-color:var(--accent);color:var(--accent);background:transparent}.btn.ghost{background:transparent;border-color:var(--sep)}
+  .page-label{margin-top:16px;text-align:center;font-size:11px;color:var(--muted)}
+  /* Sidebar overlay */
+  #sidebar{position:fixed;top:0;left:0;height:100%;width:240px;background:rgba(0,0,0,0.6);backdrop-filter:blur(6px);padding:20px;transform:translateX(-100%);transition:transform .25s ease;z-index:100}
+  #sidebar.show{transform:translateX(0)}
+  #sidebar h2{margin-top:0;color:var(--fg)}
+  #sidebar ul{list-style:none;padding:0;margin:20px 0}
+  #sidebar li{margin:10px 0}
+  #sidebar a{color:var(--fg);text-decoration:none;font-weight:600;cursor:pointer}
+  #menuBtn{margin-right:10px}
+  .scrim{position:fixed;inset:0;background:rgba(0,0,0,.28);backdrop-filter:blur(2px);z-index:90}
+  .scrim.hidden{display:none}
+  /* Modal */
+  .modal{position:fixed;inset:0;display:grid;place-items:center;background:rgba(0,0,0,.35);backdrop-filter:blur(2px);z-index:120}
+  .modal.hidden{display:none}
+  .dialog{width:min(92vw,440px);background:var(--card);border:1px solid var(--sep);border-radius:16px;box-shadow:var(--shadow);padding:16px}
+  .dialog .title{font-weight:700;margin-bottom:8px}
+  .dialog .row{display:flex;gap:8px;justify-content:flex-end;margin-top:10px}
+  </style>
+</head>
+<body>
+<header>
+  <button id="menuBtn" class="btn ghost">☰</button>
+  <h1 class="h1" id="title">Workout Selection</h1>
+  <button id="backTop" class="btn ghost hidden">←</button>
+</header>
+
+<div id="sidebar">
+  <h2>Menu</h2>
+  <ul>
+    <li><a href="#" data-nav="home">Home</a></li>
+    <li><a href="#" data-nav="pushup">Push-ups</a></li>
+    <li><a href="#" data-nav="squat">Squats</a></li>
+    <li><a href="#" data-nav="plank">Plank</a></li>
+  </ul>
+</div>
+<div id="scrim" class="scrim hidden" aria-hidden="true"></div>
+
+<main>
+  <section id="home">
+    <div class="grid">
+      <div class="card workout" data-go="pushup"><div class="name">Push-ups</div><div class="sub">Sets · Reps</div></div>
+      <div class="card workout" data-go="squat"><div class="name">Squats</div><div class="sub">Sets · Reps</div></div>
+      <div class="card workout" data-go="plank"><div class="name">Plank</div><div class="sub">Seconds · Timer</div></div>
+    </div>
+    <div class="page-label">Home</div>
+  </section>
+
+  <section id="session" class="hidden">
+    <div class="card">
+      <div class="small" id="wname"></div>
+      <div style="display:flex;gap:8px;align-items:center;justify-content:flex-end">
+        <span class="small" id="progText">Week 1 · Day 1</span>
+        <button class="btn flat" id="next">Finish Session</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="small" style="margin-bottom:6px">Today's Sets</div>
+      <div id="sets"></div>
+    </div>
+    <div class="card">
+      <div class="small" style="margin-bottom:6px">Rest Timer</div>
+      <div class="timer">
+        <div id="rest">01:30</div>
+        <button id="toggle" class="btn">Start</button>
+      </div>
+    </div>
+    <div class="page-label">Session</div>
+  </section>
+</main>
+
+<!-- MAX modal -->
+<div id="maxModal" class="modal hidden">
+  <div class="dialog">
+    <div class="title" id="maxPrompt">Enter your maximum</div>
+    <input id="maxInput" type="number" min="1" placeholder="Enter a number" style="width:100%;padding:10px;border-radius:10px;border:1px solid var(--sep);background:var(--surface);color:var(--fg)">
+    <div class="row">
+      <button class="btn ghost" id="maxCancel">Cancel</button>
+      <button class="btn flat" id="maxSave">Save</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ===== App Script (stable working build) =====
+const $=q=>document.querySelector(q), $$=q=>Array.from(document.querySelectorAll(q));
+
+// --- State ---
+const SKEY='vibe6w_stable_v1';
+const D=()=>({rest:90,workout:'pushup',sets:[],max:{},progress:{pushup:{w:1,d:1},squat:{w:1,d:1},plank:{w:1,d:1}}});
+let st=JSON.parse(localStorage.getItem(SKEY)||'null')||D();
+const save=()=>localStorage.setItem(SKEY,JSON.stringify(st));
+const clamp=(n,min,max)=>Math.max(min,Math.min(max,n));
+const pad2=n=>String(n).padStart(2,'0');
+const fmt=s=>{s=Math.max(0,s|0);return pad2((s/60|0))+':'+pad2(s%60|0)};
+
+// --- Views ---
+function view(v){
+  $('#home').classList.toggle('hidden',v!=='home');
+  $('#session').classList.toggle('hidden',v!=='session');
+  $('#title').textContent=(v==='home'?'Workout Selection':(st.workoutName||'Session'));
+  $('#backTop').classList.toggle('hidden',v!=='session');
+}
+$('#backTop').addEventListener('click',()=>view('home'));
+
+// --- Progress helpers ---
+function getProg(ex){st.progress[ex]=st.progress[ex]||{w:1,d:1};return st.progress[ex];}
+function incProg(ex){const p=getProg(ex); p.d++; if(p.d>3){p.d=1; p.w=clamp(p.w+1,1,6);} save();}
+
+// --- Rest per week/day ---
+const REST_BY_WEEK_DAY={1:[60,60,60],2:[60,90,120],3:[60,90,120],4:[60,90,120],5:[60,45,45],6:[60,45,45]};
+
+// --- Push-up exact plan (from images) ---
+const PUSHUP_PLAN={
+  1:{1:[{min:0,max:4,sets:[2,3,2,2,3]},{min:5,max:10,sets:[6,6,4,4,5]},{min:11,max:20,sets:[10,12,7,7,9]}],
+     2:[{min:0,max:4,sets:[3,4,2,2,4]},{min:5,max:10,sets:[10,10,8,8,7]},{min:11,max:20,sets:[10,12,8,8,12]}],
+     3:[{min:0,max:4,sets:[4,5,4,4,5]},{min:5,max:10,sets:[8,10,7,7,10]},{min:11,max:20,sets:[11,15,9,9,13]}]},
+  2:{1:[{min:0,max:5,sets:[4,6,4,4,6]},{min:6,max:10,sets:[9,11,8,8,11]},{min:11,max:20,sets:[14,14,10,10,15]}],
+     2:[{min:0,max:5,sets:[5,6,4,4,7]},{min:6,max:10,sets:[10,12,8,9,13]},{min:11,max:20,sets:[14,16,12,12,17]}],
+     3:[{min:0,max:5,sets:[5,7,5,5,8]},{min:6,max:10,sets:[12,13,10,10,15]},{min:11,max:20,sets:[16,17,14,14,20]}]},
+  3:{1:[{min:16,max:20,sets:[10,12,7,7,9]},{min:21,max:25,sets:[12,17,13,13,17]},{min:26,max:999,sets:[14,18,14,14,20]}],
+     2:[{min:16,max:20,sets:[10,10,14,8,12]},{min:21,max:25,sets:[14,16,14,14,19]},{min:26,max:999,sets:[20,22,15,15,25]}],
+     3:[{min:16,max:20,sets:[11,15,11,9,13]},{min:21,max:25,sets:[16,20,16,15,21]},{min:26,max:999,sets:[22,24,20,20,28]}]},
+  4:{1:[{min:16,max:20,sets:[12,14,16,10,16]},{min:21,max:25,sets:[18,22,18,16,25]},{min:26,max:999,sets:[21,25,21,21,32]}],
+     2:[{min:16,max:20,sets:[14,16,12,12,18]},{min:21,max:25,sets:[20,20,20,20,28]},{min:26,max:999,sets:[25,25,29,29,36]}],
+     3:[{min:16,max:20,sets:[16,23,13,13,20]},{min:21,max:25,sets:[23,28,23,23,33]},{min:26,max:999,sets:[29,33,29,29,40]}]},
+  5:{1:[{min:31,max:35,sets:[17,19,15,15,20]},{min:36,max:40,sets:[28,35,22,25,35]},{min:41,max:999,sets:[36,40,24,30,40]}],
+     2:[{min:31,max:35,sets:[10,10,13,10,10,10,9,25]},{min:36,max:40,sets:[18,18,20,20,14,14,9,40]},{min:41,max:999,sets:[19,19,22,22,18,22,22,45]}],
+     3:[{min:31,max:35,sets:[13,13,15,13,12,12,10,30]},{min:36,max:40,sets:[18,20,20,20,17,20,20,45]},{min:41,max:999,sets:[20,22,24,24,20,26,22,50]}]},
+  6:{1:[{min:46,max:50,sets:[25,30,20,15,40]},{min:51,max:60,sets:[40,50,25,25,50]},{min:61,max:999,sets:[45,55,35,30,55]}],
+     2:[{min:46,max:50,sets:[14,18,14,14,15,14,10,10,44]},{min:51,max:60,sets:[20,21,21,23,23,20,20,10,53]},{min:61,max:999,sets:[22,22,24,30,24,24,22,18,58]}],
+     3:[{min:46,max:50,sets:[13,13,17,15,17,16,15,14,50]},{min:51,max:60,sets:[22,26,30,25,26,26,22,22,60]},{min:61,max:999,sets:[26,33,33,30,33,26,26,22,60]}]}
+};
+const matchBucket=(bs,max)=>bs.find(b=>max>=b.min&&max<=b.max);
+const pushupFromPlan=(w,d,max)=>{const wk=PUSHUP_PLAN[w]; if(!wk) return null; const bs=wk[d]; if(!bs) return null; const b=matchBucket(bs,max); return b?b.sets.slice():null;};
+
+// --- Fallback generator (squat/plank) ---
+function fiveSetsFrom(maxVal, week, day, type){
+  const base=type==='plank'?0.5:0.55;
+  const rate=base+0.04*(week-1)+0.02*(day-1);
+  const first=Math.max(type==='plank'?10:1,Math.round(maxVal*rate));
+  const step=type==='plank'?5:Math.max(1,Math.round(maxVal*0.05));
+  const a=[first,first+step,first+2*step,first+step,first];
+  return a.map(v=>type==='plank'?Math.min(Math.round(maxVal*1.2),v):Math.min(Math.round(maxVal*0.9),v));
+}
+
+// --- Routine dispatcher ---
+function genRoutine(ex){
+  if(ex==='pushup'){
+    const p=getProg(ex);
+    const exact=pushupFromPlan(p.w,p.d, st.max.pushup||0);
+    if(exact) return exact;
+  }
+  const p=getProg(ex); const max=st.max[ex]||(ex==='plank'?30:10);
+  return fiveSetsFrom(max,p.w,p.d, ex==='plank'?'plank':'reps');
+}
+
+// --- MAX modal ---
+let pendingEx=null;
+function openMaxModal(ex){
+  pendingEx=ex;
+  const isPlank=ex==='plank';
+  $('#maxPrompt').textContent=isPlank?'Enter max plank hold (sec)':(ex==='pushup'?'Enter max push-ups':'Enter max squats');
+  $('#maxInput').value=isPlank?45:(ex==='pushup'?20:30);
+  $('#maxModal').classList.remove('hidden');
+  setTimeout(()=>$('#maxInput').focus(),0);
+}
+function closeMaxModal(){ $('#maxModal').classList.add('hidden'); pendingEx=null; }
+function saveMax(){
+  const v=Number($('#maxInput').value);
+  if(!Number.isFinite(v)||v<=0){ alert('Please enter a valid number.'); return; }
+  st.max[pendingEx]=Math.round(v);
+  st.progress[pendingEx]={w:1,d:1};
+  save(); closeMaxModal();
+  setupSession(pendingEx); view('session');
+}
+$('#maxSave').addEventListener('click',saveMax);
+$('#maxCancel').addEventListener('click',closeMaxModal);
+$('#maxInput').addEventListener('keydown',e=>{if(e.key==='Enter') saveMax(); if(e.key==='Escape') closeMaxModal();});
+
+// --- Rendering ---
+function setDefaults(){
+  const w=st.workout; st.workoutName=w==='pushup'?'Push-ups':w==='squat'?'Squats':'Plank';
+  $('#wname').textContent=st.workoutName;
+  const p=getProg(w); $('#progText').textContent=`Week ${p.w} · Day ${p.d}`;
+}
+function renderSets(){
+  const box=$('#sets'); box.innerHTML='';
+  st.sets.forEach((v,i)=>{
+    const r=document.createElement('div'); r.className='setrow';
+    r.innerHTML=`<div class="setnum">${i+1}</div>
+                 <div>${st.workout==='plank'?`<b>${v}s</b> Plank <span class="small">Left:<b id="rem-${i}">${fmt(v)}</b></span>`:`<b>${v} reps</b> ${st.workoutName}`}</div>
+                 <div><input type="checkbox"></div>`;
+    box.appendChild(r);
+  });
+}
+function setupSession(forceEx){
+  if(forceEx) st.workout=forceEx;
+  setDefaults();
+  const p=getProg(st.workout);
+  const restMap=REST_BY_WEEK_DAY[p.w]||[90,90,90];
+  st.rest=restMap[p.d-1]||90;
+  st.sets=genRoutine(st.workout);
+  renderSets();
+  $('#rest').textContent=fmt(st.rest);
+}
+
+// --- Start workout from Home ---
+function startWorkout(ex){ if(st.max[ex]==null){ openMaxModal(ex); return; } setupSession(ex); view('session'); }
+$$('.workout').forEach(c=>c.addEventListener('click',()=>startWorkout(c.dataset.go)));
+
+// --- Session actions ---
+function advanceSession(){ incProg(st.workout); setupSession(); save(); }
+$('#next').addEventListener('click',advanceSession);
+
+// --- Timer ---
+let restTimer=null, running=false, remain=0;
+function syncRest(){ $('#rest').textContent=fmt(remain); }
+function startRest(){ if(running) return; remain=st.rest|0; syncRest(); running=true; restTimer=setInterval(()=>{remain=Math.max(0,remain-1); syncRest(); if(remain<=0){ stopRest(); }},1000); $('#toggle').textContent='Stop'; }
+function stopRest(){ if(!running) return; running=false; clearInterval(restTimer); $('#toggle').textContent='Start'; }
+$('#toggle').addEventListener('click',()=> running?stopRest():startRest());
+
+// --- Sidebar overlay + scrim ---
+const sidebarEl=$('#sidebar'), scrimEl=$('#scrim');
+const isOpen=()=>sidebarEl.classList.contains('show');
+const openSidebar=()=>{sidebarEl.classList.add('show'); scrimEl.classList.remove('hidden');};
+const closeSidebar=()=>{sidebarEl.classList.remove('show'); scrimEl.classList.add('hidden');};
+$('#menuBtn').addEventListener('click',()=> isOpen()? closeSidebar(): openSidebar());
+scrimEl.addEventListener('click',closeSidebar);
+$$('#sidebar a').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();const nav=a.dataset.nav; if(nav==='home'){view('home');} else if(['pushup','squat','plank'].includes(nav)){startWorkout(nav);} closeSidebar();}));
+
+// --- Swipe gestures (open from left edge, close with left-swipe) ---
+let tsX=0, tsY=0, swiping=false, edgeOpen=false;
+window.addEventListener('touchstart',e=>{const t=e.touches[0]; tsX=t.clientX; tsY=t.clientY; swiping=false; edgeOpen=!isOpen() && tsX<24; if(isOpen()||edgeOpen) swiping=true;},{passive:true});
+window.addEventListener('touchmove',e=>{if(!swiping) return; const t=e.touches[0]; const dx=t.clientX-tsX; const dy=Math.abs(t.clientY-tsY); if(dy>28){ swiping=false; return; } if(edgeOpen && dx>40){ openSidebar(); swiping=false; } if(isOpen() && dx<-40){ closeSidebar(); swiping=false; }},{passive:true});
+window.addEventListener('touchend',()=>{swiping=false; edgeOpen=false;},{passive:true});
+
+// --- Init ---
+view('home');
+</script>
+
+<!-- PWA: register service worker -->
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js');
+  });
+}
+</script>
+</body>
+</html>
