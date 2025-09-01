@@ -20,9 +20,9 @@ main{max-width:760px;margin:0 auto;padding:16px}
 .btn.flat{border-color:var(--accent);color:var(--accent);background:transparent}.btn.ghost{background:transparent;border-color:var(--sep)}
 .page-label{margin-top:16px;text-align:center;font-size:11px;color:var(--muted)}
 /* Sidebar overlay */
-#sidebar{position:fixed;top:0;left:0;height:100%;width:240px;background:rgba(0,0,0,0.6);backdrop-filter:blur(6px);padding:20px;transform:translateX(-100%);transition:transform .25s ease;z-index:100}
+#sidebar{position:fixed;top:0;left:0;height:100%;width:240px;background:rgba(0,0,0,0.6);backdrop-filter:blur(6px);padding:calc(16px + env(safe-area-inset-top)) 20px 20px 20px;box-sizing:border-box;transform:translateX(-100%);transition:transform .25s ease;z-index:100}
 #sidebar.show{transform:translateX(0)}
-#sidebar h2{margin-top:0;color:var(--fg)}
+#sidebar h2{margin:0 0 12px 0;color:var(--fg)}
 #sidebar ul{list-style:none;padding:0;margin:20px 0}
 #sidebar li{margin:10px 0}
 #sidebar a{color:var(--fg);text-decoration:none;font-weight:600;cursor:pointer}
