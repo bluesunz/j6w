@@ -39,6 +39,23 @@
       }
     }
 
+    /* Sidebar contrast tuning for light mode */
+    @media(prefers-color-scheme:light) {
+      #sidebar {
+        background: rgba(255, 255, 255, 0.92);
+        border-right: 1px solid var(--sep);
+        backdrop-filter: blur(8px);
+      }
+
+      #sidebar a {
+        color: var(--fg);
+      }
+
+      #sidebar h2 {
+        color: var(--fg);
+      }
+    }
+
     /* Enforce background on whole viewport when iOS hides toolbar */
     #appRoot,
     main,
@@ -74,9 +91,9 @@
       position: sticky;
       top: 0;
       padding: calc(14px + env(safe-area-inset-top)) 16px 14px;
-      background: linear-gradient(180deg, rgba(255, 255, 255, .06), rgba(0, 0, 0, .14));
+      background: rgba(0, 0, 0, .06);
       backdrop-filter: blur(8px);
-      border-bottom: 1px solid var(--skeuo-border);
+      border-bottom: 1px solid var(--sep);
       z-index: 20;
       display: flex;
       align-items: center;
@@ -303,121 +320,6 @@
       justify-content: flex-end;
       margin-top: 10px
     }
-
-    /* ===== Skeuomorphism Theme (Light/Dark aware) ===== */
-    :root {
-      --skeuo-border: rgba(255, 255, 255, .06);
-      --skeuo-deep: rgba(0, 0, 0, .55);
-      --skeuo-soft: rgba(0, 0, 0, .25);
-      --skeuo-hi: rgba(255, 255, 255, .18);
-      --skeuo-hi-soft: rgba(255, 255, 255, .08);
-      --skeuo-surface-grad: linear-gradient(145deg, rgba(255, 255, 255, .02), rgba(0, 0, 0, .22));
-      --skeuo-card-grad: linear-gradient(145deg, rgba(255, 255, 255, .03), rgba(0, 0, 0, .28));
-      --skeuo-btn-grad: linear-gradient(180deg, rgba(255, 255, 255, .16), rgba(0, 0, 0, .2));
-    }
-
-    @media (prefers-color-scheme: light) {
-      :root {
-        --skeuo-border: rgba(0, 0, 0, .08);
-        --skeuo-deep: rgba(0, 0, 0, .24);
-        --skeuo-soft: rgba(0, 0, 0, .12);
-        --skeuo-hi: rgba(255, 255, 255, .9);
-        --skeuo-hi-soft: rgba(255, 255, 255, .65);
-        --skeuo-surface-grad: linear-gradient(145deg, rgba(255, 255, 255, 1), rgba(245, 247, 250, 1));
-        --skeuo-card-grad: linear-gradient(145deg, #ffffff, #eef2f7);
-        --skeuo-btn-grad: linear-gradient(180deg, #ffffff, #e9eef5);
-      }
-    }
-
-    /* Cards & Surfaces */
-    .card {
-      background: var(--skeuo-card-grad);
-      border: 1px solid var(--skeuo-border);
-      box-shadow:
-        10px 10px 18px rgba(0, 0, 0, .35),
-        -8px -8px 14px var(--skeuo-hi-soft),
-        inset 0 1px 0 var(--skeuo-hi);
-    }
-
-    .setrow,
-    .timer,
-    .dialog {
-      background: var(--skeuo-surface-grad);
-      border: 1px solid var(--skeuo-border);
-      box-shadow:
-        6px 6px 14px var(--skeuo-soft),
-        -4px -4px 10px var(--skeuo-hi-soft),
-        inset 0 1px 0 var(--skeuo-hi);
-    }
-
-    /* Workout tiles */
-    .workout {
-      background-image: linear-gradient(145deg, rgba(255, 255, 255, .06), rgba(0, 0, 0, .14));
-      box-shadow:
-        8px 8px 16px rgba(0, 0, 0, .35),
-        -6px -6px 12px var(--skeuo-hi-soft),
-        inset 0 1px 0 var(--skeuo-hi);
-    }
-
-    /* Number badge with emboss effect */
-    .setnum {
-      box-shadow:
-        inset 3px 3px 6px rgba(0, 0, 0, .35),
-        inset -2px -2px 5px var(--skeuo-hi);
-    }
-
-    /* Buttons */
-    .btn {
-      background: var(--skeuo-btn-grad);
-      border: 1px solid var(--skeuo-border);
-      box-shadow:
-        6px 6px 12px rgba(0, 0, 0, .32),
-        -4px -4px 10px var(--skeuo-hi-soft),
-        inset 0 1px 0 var(--skeuo-hi);
-      transition: transform .06s ease, box-shadow .12s ease, background .12s ease;
-    }
-
-    .btn.flat {
-      background: linear-gradient(180deg, rgba(60, 109, 240, .2), rgba(60, 109, 240, .08));
-      box-shadow:
-        0 6px 12px rgba(60, 109, 240, .25),
-        inset 0 1px 0 rgba(255, 255, 255, .35);
-    }
-
-    .btn.ghost {
-      background: linear-gradient(180deg, rgba(255, 255, 255, .02), rgba(0, 0, 0, .08));
-    }
-
-    .btn:active {
-      transform: translateY(1px);
-      box-shadow:
-        3px 3px 8px rgba(0, 0, 0, .35),
-        -2px -2px 6px var(--skeuo-hi-soft),
-        inset 0 2px 6px rgba(0, 0, 0, .18);
-    }
-
-    /* Checkbox (soft skeuo) */
-    input[type="checkbox"] {
-      appearance: none;
-      width: 22px;
-      height: 22px;
-      border-radius: 6px;
-      border: 1px solid var(--skeuo-border);
-      background: linear-gradient(145deg, rgba(255, 255, 255, .06), rgba(0, 0, 0, .2));
-      box-shadow:
-        inset 2px 2px 4px rgba(0, 0, 0, .35),
-        inset -2px -2px 4px var(--skeuo-hi);
-      position: relative;
-    }
-
-    input[type="checkbox"]:checked::after {
-      content: '';
-      position: absolute;
-      inset: 4px;
-      border-radius: 4px;
-      background: var(--accent);
-      box-shadow: inset 0 1px 1px rgba(255, 255, 255, .5);
-    }
   </style>
 </head>
 
@@ -535,6 +437,15 @@
     const pad2 = n => String(n).padStart(2, '0');
     const fmt = s => { s = Math.max(0, s | 0); return pad2((s / 60 | 0)) + ':' + pad2(s % 60 | 0) };
 
+    // ===== Constants & helpers (cleaned) =====
+    const WORKOUT_LABEL = { pushup: 'Push-ups', squat: 'Squats', plank: 'Plank' };
+    const MAX_PROMPT = {
+      pushup: 'Enter max push-ups',
+      squat: 'Enter max squats',
+      plank: 'Enter max plank hold (sec)'
+    };
+    const DEFAULT_MAX = { pushup: 20, squat: 30, plank: 45 };
+
     // ===== Navigation/views =====
     function view(v) {
       $('#home').classList.toggle('hidden', v !== 'home');
@@ -625,20 +536,34 @@
     const matchBucket = (bs, max) => bs.find(b => max >= b.min && max <= b.max);
     const pushupFromPlan = (w, d, max) => { const wk = PUSHUP_PLAN[w]; if (!wk) return null; const bs = wk[d]; if (!bs) return null; const b = matchBucket(bs, max) || bs[bs.length - 1]; return b ? b.sets.slice() : null; };
     const squatFromPlan = (w, d, max) => { const wk = SQUAT_PLAN[w]; if (!wk) return null; const bs = wk[d]; if (!bs) return null; const b = matchBucket(bs, max) || bs[bs.length - 1]; return b ? b.sets.slice() : null; };
-    function fiveSetsFrom(maxVal, week, day, type) { const base = type === 'plank' ? 0.5 : 0.55; const rate = base + 0.04 * (week - 1) + 0.02 * (day - 1); const first = Math.max(type === 'plank' ? 10 : 1, Math.round(maxVal * rate)); const step = type === 'plank' ? 5 : Math.max(1, Math.round(maxVal * 0.05)); const a = [first, first + step, first + 2 * step, first + step, first]; return a.map(v => type === 'plank' ? Math.min(Math.round(maxVal * 1.2), v) : Math.min(Math.round(maxVal * 0.9), v)); }
+    function fiveSetsFrom(maxVal, week, day, type) {
+      const base = type === 'plank' ? 0.5 : 0.55;
+      const rate = base + 0.04 * (week - 1) + 0.02 * (day - 1);
+      const first = Math.max(type === 'plank' ? 10 : 1, Math.round(maxVal * rate));
+      const step = type === 'plank' ? 5 : Math.max(1, Math.round(maxVal * 0.05));
+      const a = [first, first + step, first + 2 * step, first + step, first];
+      return a.map(v => type === 'plank' ? Math.min(Math.round(maxVal * 1.2), v) : Math.min(Math.round(maxVal * 0.9), v));
+    }
     function genRoutine(ex) {
+      const p = getProg(ex);
       if (ex === 'pushup') {
-        const p = getProg(ex); const exact = pushupFromPlan(p.w, p.d, st.max.pushup || 0); if (exact) return exact;
+        const exact = pushupFromPlan(p.w, p.d, st.max.pushup || 0); if (exact) return exact;
+      } else if (ex === 'squat') {
+        const exact = squatFromPlan(p.w, p.d, st.max.squat || 0); if (exact) return exact;
       }
-      if (ex === 'squat') {
-        const p = getProg(ex); const exact = squatFromPlan(p.w, p.d, st.max.squat || 0); if (exact) return exact;
-      }
-      const p = getProg(ex); const max = st.max[ex] || (ex === 'plank' ? 30 : 10); return fiveSetsFrom(max, p.w, p.d, ex === 'plank' ? 'plank' : 'reps');
+      const max = st.max[ex] || (ex === 'plank' ? 30 : 10);
+      return fiveSetsFrom(max, p.w, p.d, ex === 'plank' ? 'plank' : 'reps');
     }
 
     // ===== Max modal =====
     let pendingEx = null;
-    function openMaxModal(ex) { pendingEx = ex; const isPlank = ex === 'plank'; $('#maxPrompt').textContent = isPlank ? 'Enter max plank hold (sec)' : (ex === 'pushup' ? 'Enter max push-ups' : 'Enter max squats'); $('#maxInput').value = isPlank ? 45 : (ex === 'pushup' ? 20 : 30); $('#maxModal').classList.remove('hidden'); setTimeout(() => $('#maxInput').focus(), 0); }
+    function openMaxModal(ex) {
+      pendingEx = ex;
+      $('#maxPrompt').textContent = MAX_PROMPT[ex] || 'Enter your maximum';
+      $('#maxInput').value = DEFAULT_MAX[ex] ?? 10;
+      $('#maxModal').classList.remove('hidden');
+      setTimeout(() => $('#maxInput').focus(), 0);
+    }
     function closeMaxModal() { $('#maxModal').classList.add('hidden'); pendingEx = null; }
     function saveMax() {
       const ex = pendingEx;
@@ -657,20 +582,35 @@
     $('#maxInput').addEventListener('keydown', e => { if (e.key === 'Enter') saveMax(); if (e.key === 'Escape') closeMaxModal(); });
 
     // ===== Render/session =====
-    function setDefaults() { const w = st.workout; st.workoutName = w === 'pushup' ? 'Push-ups' : w === 'squat' ? 'Squats' : 'Plank'; $('#wname').textContent = st.workoutName; const p = getProg(w); $('#progText').textContent = `Week ${p.w} · Day ${p.d}`; }
+    function setDefaults() {
+      const w = st.workout;
+      st.workoutName = WORKOUT_LABEL[w] || 'Session';
+      $('#wname').textContent = st.workoutName;
+      const p = getProg(w);
+      $('#progText').textContent = `Week ${p.w} · Day ${p.d}`;
+    }
     function renderSets() { const box = $('#sets'); box.innerHTML = ''; st.sets.forEach((v, i) => { const r = document.createElement('div'); r.className = 'setrow'; r.innerHTML = `<div class="setnum">${i + 1}</div><div>${st.workout === 'plank' ? `<b>${v}s</b> Plank <span class="small">Left:<b id="rem-${i}">${fmt(v)}</b></span>` : `<b>${v} reps</b> ${st.workoutName}`}</div><div><input type="checkbox"></div>`; box.appendChild(r); }); }
+    function restMapFor(ex, week) {
+      return ex === 'squat' ? (SQUAT_REST_BY_WEEK_DAY[week] || [90, 90, 90]) : (REST_BY_WEEK_DAY[week] || [90, 90, 90]);
+    }
+
     function setupSession(forceEx) {
       if (forceEx) st.workout = forceEx;
       setDefaults();
       const p = getProg(st.workout);
-      const restMap = st.workout === 'squat' ? (SQUAT_REST_BY_WEEK_DAY[p.w] || [90, 90, 90]) : (REST_BY_WEEK_DAY[p.w] || [90, 90, 90]);
+      const restMap = restMapFor(st.workout, p.w);
       st.rest = restMap[p.d - 1] || 90;
       st.sets = genRoutine(st.workout);
       renderSets();
       $('#rest').textContent = fmt(st.rest);
     }
 
-    function startWorkout(ex) { if (st.max[ex] == null) { openMaxModal(ex); return; } setupSession(ex); view('session'); }
+    function startWorkout(ex) {
+      if (!['pushup', 'squat', 'plank'].includes(ex)) return;
+      if (st.max[ex] == null) { openMaxModal(ex); return; }
+      setupSession(ex);
+      view('session');
+    }
     $$('.workout').forEach(c => c.addEventListener('click', () => startWorkout(c.dataset.go)));
 
     function advanceSession() { incProg(st.workout); setupSession(); save(); }
@@ -692,7 +632,14 @@
     const closeSidebar = () => { sidebarEl.classList.remove('show'); scrimEl.classList.add('hidden'); };
     $('#menuBtn').addEventListener('click', () => isOpen() ? closeSidebar() : openSidebar());
     scrimEl.addEventListener('click', closeSidebar);
-    $$('#sidebar a').forEach(a => a.addEventListener('click', e => { e.preventDefault(); const nav = a.dataset.nav; if (nav === 'home') { view('home'); } else if (['pushup', 'squat', 'plank'].includes(nav)) { startWorkout(nav); } else if (nav === 'reset') { refreshReset(); view('reset'); } closeSidebar(); }));
+    $$('#sidebar a').forEach(a => a.addEventListener('click', e => {
+      e.preventDefault();
+      const nav = a.dataset.nav;
+      if (nav === 'home') { view('home'); }
+      else if (['pushup', 'squat', 'plank'].includes(nav)) { startWorkout(nav); }
+      else if (nav === 'reset') { refreshReset(); view('reset'); }
+      closeSidebar();
+    }));
     let tsX = 0, tsY = 0, swiping = false, edgeOpen = false;
     window.addEventListener('touchstart', e => { const t = e.touches[0]; tsX = t.clientX; tsY = t.clientY; swiping = false; edgeOpen = !isOpen() && tsX < 24; if (isOpen() || edgeOpen) swiping = true; }, { passive: true });
     window.addEventListener('touchmove', e => { if (!swiping) return; const t = e.touches[0]; const dx = t.clientX - tsX; const dy = Math.abs(t.clientY - tsY); if (dy > 28) { swiping = false; return; } if (edgeOpen && dx > 40) { openSidebar(); swiping = false; } if (isOpen() && dx < -40) { closeSidebar(); swiping = false; } }, { passive: true });
