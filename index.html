@@ -504,7 +504,17 @@
     let pendingEx = null;
     function openMaxModal(ex) { pendingEx = ex; const isPlank = ex === 'plank'; $('#maxPrompt').textContent = isPlank ? 'Enter max plank hold (sec)' : (ex === 'pushup' ? 'Enter max push-ups' : 'Enter max squats'); $('#maxInput').value = isPlank ? 45 : (ex === 'pushup' ? 20 : 30); $('#maxModal').classList.remove('hidden'); setTimeout(() => $('#maxInput').focus(), 0); }
     function closeMaxModal() { $('#maxModal').classList.add('hidden'); pendingEx = null; }
-    function saveMax() { const v = Number($('#maxInput').value); if (!Number.isFinite(v) || v <= 0) { alert('Please enter a valid number.'); return; } st.max[pendingEx] = Math.round(v); st.progress[pendingEx] = { w: 1, d: 1 }; save(); closeMaxModal(); setupSession(pendingEx); view('session'); }
+    function saveMax() {
+      const ex = pendingEx;
+      const v = Number($('#maxInput').value);
+      if (!Number.isFinite(v) || v <= 0) { alert('Please enter a valid number.'); return; }
+      st.max[ex] = Math.round(v);
+      st.progress[ex] = { w: 1, d: 1 };
+      save();
+      setupSession(ex);
+      closeMaxModal();
+      view('session');
+    }
     $('#maxSave').addEventListener('click', saveMax);
     $('#maxCancel').addEventListener('click', closeMaxModal);
     $('#maxInput').addEventListener('keydown', e => { if (e.key === 'Enter') saveMax(); if (e.key === 'Escape') closeMaxModal(); });
