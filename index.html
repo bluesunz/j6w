@@ -5,8 +5,13 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <title>Vibe 6W — Pushup/Squat/Plank</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#0b0c10" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#f7f8fb" media="(prefers-color-scheme: light)">
   <style>
     :root {
+      color-scheme: light dark;
       --bg: #0b0c10;
       --fg: #eaeef5;
       --muted: #98a2b3;
@@ -32,6 +37,22 @@
         --tile2: #eafaf2;
         --tile3: #fff4db
       }
+    }
+
+    /* Enforce background on whole viewport when iOS hides toolbar */
+    #appRoot,
+    main,
+    section {
+      background: var(--bg);
+    }
+
+    html,
+    body {
+      background: var(--bg);
+    }
+
+    body {
+      min-height: 100svh;
     }
 
     * {
