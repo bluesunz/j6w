@@ -510,6 +510,7 @@
       if (!Number.isFinite(v) || v <= 0) { alert('Please enter a valid number.'); return; }
       st.max[ex] = Math.round(v);
       st.progress[ex] = { w: 1, d: 1 };
+      st.workout = ex;
       save();
       setupSession(ex);
       closeMaxModal();
